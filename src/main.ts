@@ -10,9 +10,9 @@ async function bootstrap() {
   /**
    * 1.- Ahora en lugar de usar solo NestFactory.create, usamos
    * NestFactory.createMicroservice
-   * 2.- Recibira 2 parametros, el AppModule y las configuraciones
-   * del microservicios, las cuales son el metodos de
-   * transporte/comunicacion y el puerto en el que estara escuchando
+   * 2.- Recibirá 2 parámetros, el AppModule y las configuraciones
+   * del microservicios, las cuales son el métodos de
+   * transporte/comunicación y el puerto en el que estará escuchando
    */
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,

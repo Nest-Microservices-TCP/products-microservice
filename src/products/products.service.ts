@@ -1,13 +1,15 @@
-import {
-  Injectable,
-  Logger,
-  NotFoundException,
-  OnModuleInit,
-} from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaClient } from '@prisma/client';
 import { PaginationDto } from 'src/common';
+/**
+ * * RpcException
+ * Es una excepción que nos proporciona el modulo de microservices
+ * de NestJS, la diferencia con las demás excepciones es que esta
+ * nos permite enviar un objeto o un texto en el mensaje del error
+ */
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class ProductsService extends PrismaClient implements OnModuleInit {
@@ -30,13 +32,13 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
     const totalPages = await this.product.count({ where: { available: true } });
     const lastPage = Math.ceil(totalPages / limit);
     /**
-     * La razon de la expresion (page - 1) es porque,
+     * La razón de la expresión (page - 1) es porque,
      * skip lo que hace es saltar registros, y las posiciones
      * en javascript se leen a partir del 0, por ende, si el
      * usuario quiere ver la pagina 1, esta es la cero, multiplicada
-     * por el limite da 0, por lo que no se salta ningun registro
+     * por el limite da 0, por lo que no se salta ningún registro
      *
-     * Y asi sucesivamente con las demas paginas
+     * Y asi sucesivamente con las demás paginas
      */
     return {
       data: await this.product.findMany({
@@ -56,7 +58,7 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
     /**
      * El filtro de available es para revisar si el
      * producto no ha sido afectado por un soft delete y asi
-     * no manipular productos que en teoria estan eliminados
+     * no manipular productos que en teoría están eliminados
      */
     const product = await this.product.findFirst({
       where: {
@@ -66,7 +68,10 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
     });
 
     if (!product) {
-      throw new NotFoundException(`Product with id=${id} not found`);
+      throw new RpcException({
+        message: `Product with id=${id} not found`,
+        status: HttpStatus.BAD_REQUEST,
+      });
     }
 
     return product;

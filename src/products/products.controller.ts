@@ -30,9 +30,9 @@ export class ProductsController {
   // @Post()
   @MessagePattern({ cmd: 'create_product' })
   /**
-   * Ahora la data que debe ser recibida para la operacion del metodo
-   * ya no vendra en un @Body ya que la comunicacion no es Http, ahora
-   * esta vendra en el @Payload
+   * Ahora la data que debe ser recibida para la operación del método
+   * ya no vendrá en un @Body ya que la comunicación no es Http, ahora
+   * esta vendrá en el @Payload
    */
   // create(@Body() createProductDto: CreateProductDto) {
   create(@Payload() createProductDto: CreateProductDto) {
