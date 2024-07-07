@@ -20,8 +20,8 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   /**
-   * Podemos crear aplicaciones hibridas, las cuales tienen diferentes
-   * metodos de comunicacion, ejemplo, podrias dejar el decorador @Post
+   * Podemos crear aplicaciones híbridas, las cuales tienen diferentes
+   * métodos de comunicación, ejemplo, podrías dejar el decorador @Post
    * para que se puedan comunicar a este microservicio a traves de Http
    * asi como dejar el decorador @MessagePattern para que igualmente
    * puedan comunicarse al microservicio a traves del transporter
@@ -73,5 +73,10 @@ export class ProductsController {
   // remove(@Param('id') id: string) {
   remove(@Payload('id') id: number) {
     return this.productsService.remove(+id);
+  }
+
+  @MessagePattern({ cmd: 'validate_products' })
+  validateProducts(@Payload() ids: number[]) {
+    return this.productsService.validateProducts(ids);
   }
 }

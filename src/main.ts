@@ -7,6 +7,8 @@ import { envs } from './config';
 async function bootstrap() {
   const logger = new Logger('Main');
 
+  console.log(envs.natsServers);
+
   /**
    * 1.- Ahora en lugar de usar solo NestFactory.create, usamos
    * NestFactory.createMicroservice
@@ -16,14 +18,34 @@ async function bootstrap() {
    */
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
+    /**
+     * Ahora, en lugar de usar comunicación TCP con el microservicio, sera
+     * usado un broker, en este caso NATS, el cual permite una comunicación
+     * mas sencillas entre nuestro microservicios, esta es la forma en la
+     * que cambiamos la comunicación de TCP a NATS
+     */
+    // {
+    //   transport: Transport.TCP,
+    //   options: {
+    //     port: envs.port,
+    //   },
+    // },
+    //TODO: Convertir esto en un snippet
     {
-      transport: Transport.TCP,
+      transport: Transport.NATS,
       options: {
-        port: envs.port,
+        /**
+         * Dado que agregamos nuestro array de servidores a las variables de
+         * entorno, entonces podemos asignar directamente esa variable a la
+         * propiedad servers de nuestra configuración de NATS
+         */
+        // servers: ['nats://localhost:4222'],
+        servers: envs.natsServers,
       },
     },
   );
 
+  //TODO: Convertir esto en un snippet
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
